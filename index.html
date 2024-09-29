@@ -3,19 +3,19 @@
 <head>
     <title>Diff Demo</title>
     <meta charset="UTF-8" />
-
     <script src="src/index.js" type="module"></script>
 </head>
 
 <body>
 
-    <div class="container" id="mathContainer">
-        <div>
-            <button id = 'newExprButton'>
-                Show new expression!
-            </button>
-        </div>
+<div class="container" id="mathContainer">
+    <div>
+        <input id="expressionInput" type="text" placeholder="Enter expression (e.g. x^3)" />
+        <input id="variableInput" type="text" placeholder="Enter variable (e.g. x)" />
+        <button id='diffButton'>Calculate Derivative</button>
     </div>
+    <div id="result"></div>
+</div>
 
 </body>
 </html>
