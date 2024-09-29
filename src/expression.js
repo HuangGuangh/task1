@@ -10,21 +10,21 @@ class Expression {
     diff(variable) {
         const expression = this._expr;
 
-        // 匹配加法
+        // deal with +
         if (expression.includes('+')) {
             const parts = expression.split('+');
             const derivedParts = parts.map(part => new Expression(part.trim()).diff(variable).toString());
             return new Expression(this.simplify(derivedParts.join(' + ')));
         }
 
-        // 匹配减法
+        // deal with -
         if (expression.includes('-')) {
             const parts = expression.split('-');
             const derivedParts = parts.map(part => new Expression(part.trim()).diff(variable).toString());
             return new Expression(this.simplify(derivedParts.join(' - ')));
         }
 
-        // 匹配乘法 (Product Rule)
+        // deal with *
         const multiplyMatch = expression.match(/(.*)\*(.*)/);
         if (multiplyMatch) {
             const left = multiplyMatch[1].trim();
@@ -32,7 +32,7 @@ class Expression {
             const leftDiff = new Expression(left).diff(variable);
             const rightDiff = new Expression(right).diff(variable);
 
-            // 检查右侧导数
+            // check the right derivative
             if (rightDiff.toString() === '0') {
                 return new Expression(leftDiff.toString());
             }
@@ -43,7 +43,7 @@ class Expression {
 
 
 
-        // 匹配幂运算
+        // deal with ^
         const powerMatch = expression.match(/(.*)\^(\d+)/);
         if (powerMatch) {
             const base = powerMatch[1].trim();
@@ -57,7 +57,7 @@ class Expression {
             const baseDiff = new Expression(base).diff(variable);
             const result = `${exponent}*${base}^${newExponent}*${baseDiff}`;
 
-            // 对于常数的导数返回 0
+            // the derivative of the const is 0
             if (baseDiff.toString() === '0') {
                 return new Expression('0');
             }
@@ -65,29 +65,29 @@ class Expression {
             return new Expression(this.simplify(result));
         }
 
-        // 对于简单变量或常数
+        //
         if (expression === variable) {
             return new Expression('1');
         }
 
-        // 如果表达式不是目标变量，直接返回 0
+        //
         return new Expression('0');
     }
 
     simplify(expression) {
-        // 移除冗余项
+        // remove redundancy
         expression = expression.replace(/0\s*\*\s*[^ +]+/g, '')
             .replace(/\s*\+\s*0/g, '')
             .replace(/\s*-\s*0/g, '')
             .replace(/^\s*\+\s*/, '')
             .replace(/^\s*-\s*/, '');
 
-        // 移除 * 1 和 x^1
+        // remove * 1 and x^1
         expression = expression.replace(/\s*\*\s*1/g, '')
             .replace(/(\w+)\^1/g, '$1');
 
-        // 特定情况处理
-        if (expression === '') return '0'; // 空表达式返回 0
+        //
+        if (expression === '') return '0'; //
 
         return expression.trim();
     }
